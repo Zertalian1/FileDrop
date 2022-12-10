@@ -1,45 +1,36 @@
 package ru.ccfit.filedrop.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.ccfit.filedrop.service.implement.UserServiceImpl;
 
-@EnableMethodSecurity
 @EnableWebSecurity
 @Configuration
-public class WebSecurityConfig {
-    UserServiceImpl userService;
+@AllArgsConstructor
+public class WebSecurityConfig{
+    private final UserServiceImpl userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    public WebSecurityConfig(UserServiceImpl userService) {
-        this.userService = userService;
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf()
-                .disable()
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf().disable()
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/").permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().denyAll()
                 )
-                //Настройка для входа в систему
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-                .logout(logout ->
-                        logout
-                                .permitAll()
-                                .logoutSuccessUrl("/"))
-                .userDetailsService(userService).build();
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 
 }
