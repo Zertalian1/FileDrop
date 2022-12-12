@@ -8,7 +8,5 @@ import ru.ccfit.filedrop.entity.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
-
-    @Query(value = "SELECT u FROM User u WHERE u.name = :username")
-    Optional<User> findByUsername(String username);
+    Optional<User> findByName(String name);
 }
