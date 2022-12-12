@@ -1,4 +1,4 @@
-package ru.ccfit.filedrop.controller;
+package ru.ccfit.filedrop.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
