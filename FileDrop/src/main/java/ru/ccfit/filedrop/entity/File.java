@@ -2,6 +2,7 @@ package ru.ccfit.filedrop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.OffsetDateTime;
 
 @Entity
@@ -14,6 +15,8 @@ public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
+    private String name;
 
     @Column
     private String path;
