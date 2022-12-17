@@ -10,7 +10,7 @@ import ru.ccfit.filedrop.details.UserDetailsImpl;
 import ru.ccfit.filedrop.dto.UserDto;
 import ru.ccfit.filedrop.entity.User;
 import ru.ccfit.filedrop.enumeration.Role;
-import ru.ccfit.filedrop.exception.NoUniqueUserException;
+import ru.ccfit.filedrop.exception.NotUniqueUserException;
 import ru.ccfit.filedrop.exception.NotFoundException;
 import ru.ccfit.filedrop.mapper.UserMapper;
 import ru.ccfit.filedrop.repository.UserRepository;
@@ -18,7 +18,6 @@ import ru.ccfit.filedrop.service.interfaces.UserService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findByName(username)
                 .map(UserDetailsImpl::new)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
     @Override
@@ -42,7 +41,7 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findByName(username)
                 .map(userMapper::userToUserDto)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(()->new NotFoundException("Пользователь " + username + " не найден!"));
     }
 
     @Override
@@ -50,7 +49,7 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(id)
                 .map(userMapper::userToUserDto)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new NotFoundException("Пользователь с id: " + id + " не найден!"));
     }
 
     @Override
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService {
       User oldUser = userRepository.findByName(user.getName()).orElse(null);
 
       if (oldUser != null) {
-        throw new NoUniqueUserException();
+        throw new NotUniqueUserException();
       }
 
       newUser.setRole(Role.USER);
@@ -87,7 +86,7 @@ public class UserServiceImpl implements UserService {
                 client -> userRepository.save(
                         UserMapper.updateUserByNotNullFieldsOfUserDto(client, user)),
                 () -> {
-                    throw new NotFoundException("Клиент с id: " + user.getId() + " не найден!");
+                    throw new NotFoundException("Пользователь с id: " + user.getId() + " не найден!");
                 }
         );
     }
