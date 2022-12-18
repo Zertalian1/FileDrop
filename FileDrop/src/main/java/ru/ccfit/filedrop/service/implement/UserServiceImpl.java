@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findByName(username)
                 .map(UserDetailsImpl::new)
-                .orElseThrow(()->new UsernameNotFoundException("User not found"));
+                .orElseThrow(()->new UsernameNotFoundException("Пользователь " + username + " не найден!"));
     }
 
     @Override
