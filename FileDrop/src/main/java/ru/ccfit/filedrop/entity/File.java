@@ -8,9 +8,9 @@ import java.time.OffsetDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "files")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "files", uniqueConstraints = @UniqueConstraint(columnNames = {"name","order_id"}))
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

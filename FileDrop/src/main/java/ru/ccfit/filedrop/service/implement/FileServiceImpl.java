@@ -3,11 +3,13 @@ package ru.ccfit.filedrop.service.implement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ccfit.filedrop.dto.FileDto;
 import ru.ccfit.filedrop.entity.File;
 import ru.ccfit.filedrop.exception.FileException;
+import ru.ccfit.filedrop.exception.IntegrationException;
 import ru.ccfit.filedrop.exception.NotFoundException;
 import ru.ccfit.filedrop.mapper.FileMapper;
 import ru.ccfit.filedrop.repository.FileRepository;
@@ -27,7 +29,7 @@ public class FileServiceImpl implements FileService {
     private final Path rootPath;
 
     @Override
-    public Resource downloadFile(Long  fileId) {
+    public Resource downloadFile(Long fileId) {
         File file = fileRepository.findById(fileId).orElseThrow(
                 () -> new NotFoundException("Файл с id: " + fileId + " не найден!")
         );
@@ -64,27 +66,33 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void saveFile(FileDto fileDto, MultipartFile multipartFile) {
-        Path filePath = getPathFile(fileDto);
+        File file;
+        try {
+            file = fileRepository.save(fileMapper.fileDtoToFile(fileDto));
+        } catch (DataIntegrityViolationException exception) {
+            throw new IntegrationException("В заказе есть файл с таким именем");
+        }
+
+        Path filePath = getPathFile(file);
 
         try {
             Files.copy(multipartFile.getInputStream(), rootPath.resolve(filePath));
         } catch (IOException e) {
+            fileRepository.delete(file);
             throw new FileException("Ошибка при сохранении файла");
         }
 
-        fileDto.setPath(filePath.toString());
-        File file = fileRepository.save(fileMapper.fileDtoToFile(fileDto));
-
-        fileMapper.fileToFileDto(file);
+        file.setPath(filePath.toString());
+        fileRepository.save(file);
     }
 
     /**
      * Возвращает относительный путь необходимого файла
      *
-     * @param fileDto dto файла
+     * @param file файл
      * @return Path относительный путь
      */
-    private Path getPathFile(FileDto fileDto) {
-       return Path.of(fileDto.getOwnerUser().getId().toString()).resolve(fileDto.getName());
+    private Path getPathFile(File file) {
+        return Path.of(String.valueOf(file.getOrder().getId())).resolve(String.valueOf(file.getId()));
     }
 }
