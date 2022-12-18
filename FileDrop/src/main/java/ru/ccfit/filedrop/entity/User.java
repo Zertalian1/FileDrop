@@ -15,14 +15,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column
+    @Column(unique = true)
     private String phone;
 
     @Column

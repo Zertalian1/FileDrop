@@ -15,6 +15,8 @@ public class FileDto {
 
     private String path;
 
+    private String name;
+
     private UserDto ownerUser;
 
     private OffsetDateTime createDateTime;

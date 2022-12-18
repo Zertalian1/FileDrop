@@ -9,4 +9,14 @@ public interface OrderMapper {
     Order orderDtoToOrder(OrderDto orderDto);
 
     OrderDto orderToOrderDto(Order order);
+
+    static Order updateOrderByNotNullFieldsOfOrderDto(Order order, OrderDto orderDto) {
+        if (orderDto.getStatus() != null) {
+            order.setStatus(orderDto.getStatus());
+        }
+        if (orderDto.getStoreUpTo() != null) {
+            order.setStoreUpTo(orderDto.getStoreUpTo());
+        }
+        return order;
+    }
 }
