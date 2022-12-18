@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void addUser(UserDto user) {
       User newUser = userMapper.userDtoToUser(user);
       User oldUser = userRepository.findByName(user.getName()).orElse(null);
