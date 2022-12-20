@@ -10,6 +10,6 @@ public class MainPageController {
     @GetMapping("/")
     public String home() {
         System.out.println("Main Page");
-        return "mainPage";
+        return "redirect:/orders";
     }
 }

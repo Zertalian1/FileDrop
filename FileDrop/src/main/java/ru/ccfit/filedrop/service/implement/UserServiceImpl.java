@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
       User oldUser = userRepository.findByName(user.getName()).orElse(null);
 
       if (oldUser != null) {
+          System.out.println("пользователь уже существует");
         throw new NotUniqueUserException();
       }
 
