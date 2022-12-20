@@ -19,9 +19,10 @@ public class OrderController {
     @GetMapping("/orders")
 
     public String getAllOrders(Model model, Principal principal){
-        System.out.println("addadda");
-        UserDto user = userService.findByUsername(principal.getName());
-        model.addAttribute("orders", orderService.getOrdersByIdUser(user.getId()));
+        if(principal != null) {
+            UserDto user = userService.findByUsername(principal.getName());
+            model.addAttribute("orders", orderService.getOrdersByIdUser(user.getId()));
+        }
         return "pages/OrdersMainPage";
     }
 }

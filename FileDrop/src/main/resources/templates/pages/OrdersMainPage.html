@@ -19,7 +19,6 @@
 <main id="main-holder">
     <div th:each="order : ${orders}" id="form-field">
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <!--<a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
@@ -32,7 +31,8 @@
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
         <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>-->
+        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
+        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
     </div>
 </main>
 </body>
