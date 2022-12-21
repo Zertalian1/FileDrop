@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
 <head>
     <link media="all" rel="stylesheet" th:href="@{/style/MainPageStyle.css}" type="text/css"/>
@@ -18,21 +18,9 @@
 
 <main id="main-holder">
     <div th:each="order : ${orders}" id="form-field">
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
-        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}" th:text="${order.getStoreUpTo()+order.getStatus()}">user</a>
+
+        <a class="order" th:href="@{/blog/{orderId}(orderId=${order.getId()})}"
+                         th:text="|${order.getCreateDateTimeAsSting()} ${order.getStatus()}|">user</a>
     </div>
 </main>
 </body>

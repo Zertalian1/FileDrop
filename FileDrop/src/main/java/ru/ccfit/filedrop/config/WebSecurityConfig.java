@@ -27,7 +27,8 @@ public class WebSecurityConfig{
                 .csrf().disable()
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/registration").anonymous()
+                                //.requestMatchers("/registration").anonymous()
+                                .requestMatchers("/style/**", "h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
@@ -52,11 +53,11 @@ public class WebSecurityConfig{
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
     }
 
-    @Bean
+    /*@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web
                 .ignoring()
                 .requestMatchers("/style/**", "h2-console/**");
-    }
+    }*/
 
 }

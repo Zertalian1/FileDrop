@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import ru.ccfit.filedrop.enumeration.Status;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -23,4 +24,9 @@ public class OrderDto {
     private OffsetDateTime storeUpTo;
 
     private List<FileDto> files;
+
+    public String getCreateDateTimeAsSting(){
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return createDateTime.format(fmt);
+    }
 }
