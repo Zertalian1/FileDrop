@@ -2,7 +2,6 @@ package ru.ccfit.filedrop.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,7 +58,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(File file) {
         try {
-            Files.delete(rootPath.resolve(file.getPath()));
+            Files.delete(rootPath.resolve(file.getPath()).resolve(file.getName()));
         } catch (IOException e) {
             throw new FileException("Ошибка при удалении файла");
         }
@@ -92,6 +91,16 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<File> getFilesByOrderId(Long id) {
         return fileRepository.getFilesByOrderId(id);
+    }
+
+    @Override
+    public void deleteFiles(List<File> filesByOrderId, String  l) {
+        filesByOrderId.forEach(this::deleteFile);
+        try {
+            Files.delete(rootPath.resolve("Order"+l));
+        } catch (IOException e) {
+            throw new FileException("Ошибка при удалении папки");
+        }
     }
 
     /**

@@ -44,4 +44,6 @@ public interface OrderService {
     List<OrderDto> getOrdersByIdUser(Long userId);
 
     List<OrderDto> getAllOrders();
+
+    void changeOrderStatus(long parseLong);
 }

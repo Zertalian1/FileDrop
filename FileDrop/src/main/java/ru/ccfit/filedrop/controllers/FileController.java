@@ -10,20 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import ru.ccfit.filedrop.dto.FileDto;
-import ru.ccfit.filedrop.dto.OrderDto;
-import ru.ccfit.filedrop.dto.UserDto;
 import ru.ccfit.filedrop.service.interfaces.FileService;
-
-import java.time.OffsetDateTime;
 
 @Controller
 @AllArgsConstructor
 public class FileController {
     private final FileService fileService;
 
-    @GetMapping("/blog/{orderId}/{fileId}/download")
+    @GetMapping("/orders/{orderId}/{fileId}/download")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId, @PathVariable String orderId) {
         ByteArrayResource resource = fileService.downloadFile(Long.parseLong(fileId));
@@ -44,10 +39,5 @@ public class FileController {
         header.add("Expires", "0");
         return header;
 
-    }
-
-    static void safeOrderFile(MultipartFile file, UserDto user, OrderDto orderDto, FileService fileService){
-        FileDto fileDto = new FileDto(file.getOriginalFilename(), user, orderDto, OffsetDateTime.now());
-        fileService.saveFile(fileDto, file);
     }
 }

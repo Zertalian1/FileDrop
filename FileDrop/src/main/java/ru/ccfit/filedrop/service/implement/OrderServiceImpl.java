@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.entity.Order;
+import ru.ccfit.filedrop.enumeration.Status;
 import ru.ccfit.filedrop.exception.IntegrationException;
 import ru.ccfit.filedrop.exception.NotFoundException;
 import ru.ccfit.filedrop.mapper.OrderMapper;
@@ -12,6 +13,7 @@ import ru.ccfit.filedrop.repository.OrderRepository;
 import ru.ccfit.filedrop.service.interfaces.FileService;
 import ru.ccfit.filedrop.service.interfaces.OrderService;
 
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
-    private final FileService fileService;
     private final OrderRepository orderRepository;
 
     @Override
@@ -37,8 +38,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new NotFoundException("Заказ с id: " + orderId + " не найден!")
         );
-
-        fileService.getFilesByOrderId(orderId).forEach(fileService::deleteFile);
 
         orderRepository.delete(order);
     }
@@ -76,6 +75,13 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = new ArrayList<>();
         orderRepository.findAll().forEach(orders::add);
         return listOrderToListOrderDto(orders);
+    }
+
+    @Override
+    public void changeOrderStatus(long parseLong) {
+        Order order = orderRepository.findById(parseLong).orElseThrow(() -> new NotFoundException("Заказ с id: " + parseLong + " не найден!"));
+        order.setStatus(Status.COMPLETED);
+        orderRepository.save(order);
     }
 
     /**

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.ccfit.filedrop.dto.FileDto;
 import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.dto.UserDto;
 import ru.ccfit.filedrop.entity.File;
@@ -52,11 +53,12 @@ public class OrderController {
         UserDto user = userService.findByUsername(principal.getName());
         OrderDto orderDto = new OrderDto(Status.PROCESS, user, OffsetDateTime.now());
         orderDto = orderService.addOrder(orderDto);
-        FileController.safeOrderFile(file, user, orderDto, fileService);
+        FileDto fileDto = new FileDto(file.getOriginalFilename(), user, orderDto, OffsetDateTime.now());
+        fileService.saveFile(fileDto, file);
         return "redirect:/orders";
     }
 
-    @GetMapping("/blog/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public String viewOrder(Model model, @PathVariable String orderId){
         OrderDto order= orderService.getOrderById(Long.parseLong(orderId));
         List<File> files = fileService.getFilesByOrderId(order.getId());
@@ -65,5 +67,17 @@ public class OrderController {
         return "pages/Order";
     }
 
+    @PostMapping("/order/{orderId}/delete")
+    public String deleteOrder(@PathVariable String orderId){
+        fileService.deleteFiles(fileService.getFilesByOrderId(Long.parseLong(orderId)), orderId);
+        orderService.deleteOrder(Long.parseLong(orderId));
+        return "redirect:/orders";
+    }
+
+    @PostMapping("/order/{orderId}/changeStatus")
+    public String changeOrderStatus(@PathVariable String orderId){
+        orderService.changeOrderStatus(Long.parseLong(orderId));
+        return "redirect:/orders";
+    }
 
 }

@@ -3,7 +3,6 @@ package ru.ccfit.filedrop.service.interfaces;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ccfit.filedrop.dto.FileDto;
-import org.springframework.core.io.Resource;
 import ru.ccfit.filedrop.entity.File;
 import ru.ccfit.filedrop.exception.*;
 
@@ -49,6 +48,8 @@ public interface FileService {
      * @return список файлов в заказе
      */
     List<File> getFilesByOrderId(Long id);
+
+    void deleteFiles(List<File> filesByOrderId, String l);
 
     /*List<FileDto>*/
 }
