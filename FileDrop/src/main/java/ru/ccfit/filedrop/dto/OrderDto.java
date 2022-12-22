@@ -24,8 +24,8 @@ public class OrderDto {
         return createDateTime.format(fmt);
     }
 
-    public OrderDto(Status status, UserDto user) {
-        createDateTime = OffsetDateTime.now();
+    public OrderDto(Status status, UserDto user, OffsetDateTime createDateTime) {
+        this.createDateTime = createDateTime;
         this.status = status;
         this.user = user;
     }

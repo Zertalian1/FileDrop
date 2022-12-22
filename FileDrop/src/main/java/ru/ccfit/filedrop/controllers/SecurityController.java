@@ -6,21 +6,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.ccfit.filedrop.dto.UserDto;
-import ru.ccfit.filedrop.service.implement.UserServiceImpl;
+import ru.ccfit.filedrop.service.interfaces.UserService;
 
 @Controller
 @AllArgsConstructor
 public class SecurityController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @GetMapping("/login")
-    public String getSign_inPage(@ModelAttribute("user") UserDto user){
+    public String getSignInPage(@ModelAttribute("user") UserDto user){
         return "/pages/LoginPage";
     }
 
     @PostMapping("/login")
-    public String sign_in(@ModelAttribute("user") UserDto user){
+    public String signIn(@ModelAttribute("user") UserDto user){
         return "redirect:/";
     }
 

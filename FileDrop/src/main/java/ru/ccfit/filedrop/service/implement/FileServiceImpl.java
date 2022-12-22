@@ -101,6 +101,6 @@ public class FileServiceImpl implements FileService {
      * @return Path относительный путь
      */
     private Path getPathFile(File file) {
-        return Path.of("Order"+ file.getOrder().getId());
+        return Path.of("Order" + file.getOrder().getId());
     }
 }

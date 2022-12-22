@@ -5,33 +5,36 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ccfit.filedrop.dto.FileDto;
 import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.dto.UserDto;
 import ru.ccfit.filedrop.entity.File;
+import ru.ccfit.filedrop.enumeration.Role;
 import ru.ccfit.filedrop.enumeration.Status;
-import ru.ccfit.filedrop.exception.FileException;
-import ru.ccfit.filedrop.service.implement.FileServiceImpl;
-import ru.ccfit.filedrop.service.implement.OrderServiceImpl;
-import ru.ccfit.filedrop.service.implement.UserServiceImpl;
+import ru.ccfit.filedrop.service.interfaces.FileService;
+import ru.ccfit.filedrop.service.interfaces.OrderService;
+import ru.ccfit.filedrop.service.interfaces.UserService;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Controller
 @AllArgsConstructor
 public class OrderController {
-    private final OrderServiceImpl orderService;
+    private final OrderService orderService;
 
-    private final FileServiceImpl fileService;
-    private final UserServiceImpl userService;
+    private final FileService fileService;
+    private final UserService userService;
 
     @GetMapping("/orders")
     public String getAllOrders(Model model, Principal principal){
         if(principal != null) {
             UserDto user = userService.findByUsername(principal.getName());
-            model.addAttribute("orders", orderService.getOrdersByIdUser(user.getId()));
+            switch (user.getRole()) {
+                case WORKER,ADMIN -> model.addAttribute("orders", orderService.getAllOrders());
+                default -> model.addAttribute("orders", orderService.getOrdersByIdUser(user.getId()));
+            }
         }
         return "pages/OrdersMainPage";
     }
@@ -47,9 +50,9 @@ public class OrderController {
             return "redirect:/order/new";
         }
         UserDto user = userService.findByUsername(principal.getName());
-        OrderDto orderDto = new OrderDto(Status.PROCESS, user);
+        OrderDto orderDto = new OrderDto(Status.PROCESS, user, OffsetDateTime.now());
         orderDto = orderService.addOrder(orderDto);
-        FileController.SafeOrderFile(file, user, orderDto, fileService);
+        FileController.safeOrderFile(file, user, orderDto, fileService);
         return "redirect:/orders";
     }
 

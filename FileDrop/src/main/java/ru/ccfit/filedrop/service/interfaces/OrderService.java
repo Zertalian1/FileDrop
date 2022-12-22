@@ -42,4 +42,6 @@ public interface OrderService {
      * @return List<OrderDto> заказов, которые соответствуют заданному пользователю
      */
     List<OrderDto> getOrdersByIdUser(Long userId);
+
+    List<OrderDto> getAllOrders();
 }

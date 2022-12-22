@@ -23,10 +23,10 @@ public class FileDto {
 
     private OrderDto order;
 
-    public FileDto(String name, UserDto ownerUser, OrderDto order) {
+    public FileDto(String name, UserDto ownerUser, OrderDto order, OffsetDateTime createDateTime) {
         this.name = name;
         this.ownerUser = ownerUser;
-        this.createDateTime = OffsetDateTime.now();
+        this.createDateTime = createDateTime;
         this.order = order;
     }
 }

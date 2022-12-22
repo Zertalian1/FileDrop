@@ -12,6 +12,7 @@ import ru.ccfit.filedrop.repository.OrderRepository;
 import ru.ccfit.filedrop.service.interfaces.FileService;
 import ru.ccfit.filedrop.service.interfaces.OrderService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,6 +69,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getOrdersByIdUser(Long userId) {
         return listOrderToListOrderDto(orderRepository.getOrderByUserId(userId));
+    }
+
+    @Override
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        orderRepository.findAll().forEach(orders::add);
+        return listOrderToListOrderDto(orders);
     }
 
     /**

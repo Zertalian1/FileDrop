@@ -1,5 +1,6 @@
 package ru.ccfit.filedrop.service.interfaces;
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ccfit.filedrop.dto.FileDto;
 import org.springframework.core.io.Resource;
@@ -17,7 +18,7 @@ public interface FileService {
      * @throws NotFoundException файл не найден
      * @throws FileException ошибка при скачивании файла
      */
-    Resource downloadFile(Long  fileId);
+    ByteArrayResource downloadFile(Long  fileId);
     /**
      * Нахождение нужного файла по его ID
      *
