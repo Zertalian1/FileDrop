@@ -42,6 +42,11 @@ public interface FileService {
      */
     void saveFile(FileDto fileDto, MultipartFile multipartFile);
 
+    /**
+     *
+     * @param id id заказа
+     * @return список файлов в заказе
+     */
     List<File> getFilesByOrderId(Long id);
 
     /*List<FileDto>*/

@@ -91,7 +91,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<File> getFilesByOrderId(Long id) {
-        return fileRepository.getFileByOrder_Id(id);
+        return fileRepository.getFilesByOrderId(id);
     }
 
     /**

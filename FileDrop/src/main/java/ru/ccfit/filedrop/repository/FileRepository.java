@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FileRepository extends CrudRepository<File,Long> {
 
-    List<File> getFileByOrder_Id(Long id);
+    List<File> getFilesByOrderId(Long id);
 }

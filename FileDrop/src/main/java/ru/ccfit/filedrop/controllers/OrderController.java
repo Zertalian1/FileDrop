@@ -22,10 +22,10 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class OrderController {
-    OrderServiceImpl orderService;
+    private final OrderServiceImpl orderService;
 
-    FileServiceImpl fileService;
-    UserServiceImpl userService;
+    private final FileServiceImpl fileService;
+    private final UserServiceImpl userService;
 
     @GetMapping("/orders")
     public String getAllOrders(Model model, Principal principal){

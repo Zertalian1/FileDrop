@@ -15,11 +15,12 @@ import ru.ccfit.filedrop.dto.FileDto;
 import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.dto.UserDto;
 import ru.ccfit.filedrop.service.implement.FileServiceImpl;
+import ru.ccfit.filedrop.service.interfaces.FileService;
 
 @Controller
 @AllArgsConstructor
 public class FileController {
-    FileServiceImpl fileService;
+    private final FileServiceImpl fileService;
 
     @GetMapping("/blog/{orderId}/{fileId}/download")
     @ResponseBody
@@ -44,7 +45,7 @@ public class FileController {
 
     }
 
-    static void SafeOrderFile(MultipartFile file, UserDto user, OrderDto orderDto, FileServiceImpl fileService){
+    static void SafeOrderFile(MultipartFile file, UserDto user, OrderDto orderDto, FileService fileService){
         FileDto fileDto = new FileDto(file.getOriginalFilename(), user, orderDto);
         fileService.saveFile(fileDto, file);
     }
