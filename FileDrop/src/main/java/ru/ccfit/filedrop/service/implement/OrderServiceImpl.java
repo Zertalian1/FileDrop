@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
                 () -> new NotFoundException("Заказ с id: " + orderId + " не найден!")
         );
 
-        order.getFiles().forEach(fileService::deleteFile);
+        fileService.getFilesByOrderId(orderId).forEach(fileService::deleteFile);
 
         orderRepository.delete(order);
     }

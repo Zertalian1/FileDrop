@@ -27,7 +27,7 @@ public class WebSecurityConfig{
                 .csrf().disable()
                 .authorizeHttpRequests(auth ->
                         auth
-                                //.requestMatchers("/registration").anonymous()
+                                .requestMatchers("/registration").anonymous()
                                 .requestMatchers("/style/**", "h2-console/**").permitAll()
                                 .anyRequest().authenticated()
                 )

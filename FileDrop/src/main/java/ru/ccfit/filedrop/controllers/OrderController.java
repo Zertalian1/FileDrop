@@ -3,25 +3,21 @@ package ru.ccfit.filedrop.controllers;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.ccfit.filedrop.dto.FileDto;
 import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.dto.UserDto;
+import ru.ccfit.filedrop.entity.File;
 import ru.ccfit.filedrop.enumeration.Status;
+import ru.ccfit.filedrop.exception.FileException;
 import ru.ccfit.filedrop.service.implement.FileServiceImpl;
 import ru.ccfit.filedrop.service.implement.OrderServiceImpl;
 import ru.ccfit.filedrop.service.implement.UserServiceImpl;
 
+import java.io.IOException;
 import java.security.Principal;
-import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @AllArgsConstructor
@@ -41,34 +37,30 @@ public class OrderController {
     }
 
     @GetMapping("/order/new")
-    public String createOrder(){
+    public String getCreateOrder(){
         return "pages/CreateNewOrder";
     }
 
-    @PostMapping("/order/uploadFile")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, Model model, Principal principal) {
+    @PostMapping("/order/createOrder")
+    public String createOrder(@RequestParam("file") MultipartFile file, Model model, Principal principal) {
         if (file.isEmpty()) {
-            model.addAttribute("message", "Please select a file to upload.");
             return "redirect:/order/new";
         }
         UserDto user = userService.findByUsername(principal.getName());
-        OrderDto orderDto = new OrderDto();
-        orderDto.setCreateDateTime(OffsetDateTime.now());
-        orderDto.setStatus(Status.PROCESS);
-        orderDto.setUser(user);
+        OrderDto orderDto = new OrderDto(Status.PROCESS, user);
         orderDto = orderService.addOrder(orderDto);
-
-
-        FileDto fileDto = new FileDto();
-        fileDto.setName(file.getOriginalFilename());
-        fileDto.setCreateDateTime(OffsetDateTime.now());
-        fileDto.setOrder(orderDto);
-        fileDto.setOwnerUser(user);
-        fileService.saveFile(fileDto, file);
-
-        // return success response
-        model.addAttribute("message", "You successfully uploaded file!");
-
+        FileController.SafeOrderFile(file, user, orderDto, fileService);
         return "redirect:/orders";
     }
+
+    @GetMapping("/blog/{orderId}")
+    public String viewOrder(Model model, @PathVariable String orderId){
+        OrderDto order= orderService.getOrderById(Long.parseLong(orderId));
+        List<File> files = fileService.getFilesByOrderId(order.getId());
+        model.addAttribute("order", order);
+        model.addAttribute("files", files);
+        return "pages/Order";
+    }
+
+
 }

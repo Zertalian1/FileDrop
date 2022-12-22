@@ -6,6 +6,8 @@ import org.springframework.core.io.Resource;
 import ru.ccfit.filedrop.entity.File;
 import ru.ccfit.filedrop.exception.*;
 
+import java.util.List;
+
 public interface FileService {
     /**
      * Скачивание файла
@@ -39,4 +41,8 @@ public interface FileService {
      * @throws FileException ошибка при загрузки файла
      */
     void saveFile(FileDto fileDto, MultipartFile multipartFile);
+
+    List<File> getFilesByOrderId(Long id);
+
+    /*List<FileDto>*/
 }

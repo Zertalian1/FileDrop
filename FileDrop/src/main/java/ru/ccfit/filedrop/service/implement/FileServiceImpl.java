@@ -16,8 +16,10 @@ import ru.ccfit.filedrop.repository.FileRepository;
 import ru.ccfit.filedrop.service.interfaces.FileService;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +31,7 @@ public class FileServiceImpl implements FileService {
     private final Path rootPath;
 
     @Override
-    public Resource downloadFile(Long fileId) {
+    public ByteArrayResource downloadFile(Long fileId) {
         File file = fileRepository.findById(fileId).orElseThrow(
                 () -> new NotFoundException("Файл с id: " + fileId + " не найден!")
         );
@@ -38,7 +40,7 @@ public class FileServiceImpl implements FileService {
 
         try {
             resource = new ByteArrayResource
-                    (Files.readAllBytes(rootPath.resolve(file.getPath())));
+                    (Files.readAllBytes(rootPath.resolve(file.getPath()).resolve(file.getName())));
         } catch (IOException e) {
             throw new FileException("Ошибка при скачивании файла");
         }
@@ -75,8 +77,9 @@ public class FileServiceImpl implements FileService {
 
         Path filePath = getPathFile(file);
 
-        try {
-            Files.copy(multipartFile.getInputStream(), rootPath.resolve(filePath));
+        try (InputStream inputStream = multipartFile.getInputStream()){
+            Files.createDirectories(rootPath.resolve(filePath));
+            Files.copy(inputStream, rootPath.resolve(filePath).resolve(file.getName()));
         } catch (IOException e) {
             fileRepository.delete(file);
             throw new FileException("Ошибка при сохранении файла");
@@ -86,6 +89,11 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(file);
     }
 
+    @Override
+    public List<File> getFilesByOrderId(Long id) {
+        return fileRepository.getFileByOrder_Id(id);
+    }
+
     /**
      * Возвращает относительный путь необходимого файла
      *
@@ -93,6 +101,6 @@ public class FileServiceImpl implements FileService {
      * @return Path относительный путь
      */
     private Path getPathFile(File file) {
-        return Path.of(String.valueOf(file.getOrder().getId())).resolve(String.valueOf(file.getId()));
+        return Path.of("Order"+ file.getOrder().getId());
     }
 }

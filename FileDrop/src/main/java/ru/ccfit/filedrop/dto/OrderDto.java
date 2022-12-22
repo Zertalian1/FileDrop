@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.ccfit.filedrop.enumeration.Status;
 
+import javax.management.ConstructorParameters;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -14,19 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
     private Long id;
-
     private Status status;
-
     private UserDto user;
-
     private OffsetDateTime createDateTime;
-
     private OffsetDateTime storeUpTo;
-
-    private List<FileDto> files;
-
     public String getCreateDateTimeAsSting(){
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return createDateTime.format(fmt);
+    }
+
+    public OrderDto(Status status, UserDto user) {
+        createDateTime = OffsetDateTime.now();
+        this.status = status;
+        this.user = user;
     }
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+  <link media="all" rel="stylesheet" th:href="@{/style/OrderStyle.css}" type="text/css"/>
+</head>
+
+<body>
+
+<header id="logout">
+  <form th:action="@{/logout}" th:method="GET">
+    <button type="submit" id="logout_btn" >Exit</button>
+  </form>
+</header>
+
+<main id="main-holder">
+  <div th:each="file : ${files}" id="form-field">
+    <a class="file" th:href="@{/blog/{orderId}/{fileId}/download(orderId=${order.getId()}, fileId=${file.getId()})}"
+       th:text="${file.getName()}">file</a>
+  </div>
+</main>
+</body>
+</html>

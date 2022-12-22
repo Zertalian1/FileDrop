@@ -1,56 +1,27 @@
-<!DOCTYPE HTML>
-<html xmlns:th="https://www.thymeleaf.org">
-
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <style>
-    html {
-      height: 100%;
-    }
-
-    body {
-      height: 90%;
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: #3a3a3a;
-    }
-
-    #main-holder {
-      width: 90%;
-      min-height: 85%;
-      margin: 65px auto;
-      background-color: white;
-      border-radius: 7px;
-      font-size: 30px;
-      padding: 1%;
-    }
-  </style>
+  <title>Spring Boot & Thymeleaf File Upload</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
-
 <body>
 
-<main id="main-holder">
-  <div th:if="${message}">
-    <h2 th:text="${message}"/>
+<section class="my-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <h2>Upload File Example</h2>
+        <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+        <form method="post" th:action="@{/order/createOrder}" enctype="multipart/form-data">
+          <div class="form-group">
+            <input type="file" name="file" class="form-control-file">
+          </div>
+          <button type="submit" class="btn btn-primary">Create order</button>
+        </form>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div>
-  <form method="POST" enctype="multipart/form-data" action="/order/uploadFile" th:object="${entry}">
-    <input type="file" name="file" />
-    <input type="submit" value="Upload" />
-  </form>
-  </div>
-
-  <div>
-  <ul>
-    <li th:each="file : ${files}">
-      <a th:href="${file}" th:text="${file}" />
-    </li>
-  </ul>
-  </div>
-
-  <form th:method="POST" th:action="@{/order/new}">
-    <button type="submit" >Create order</button>
-  </form>
-</main>
 </body>
 </html>
