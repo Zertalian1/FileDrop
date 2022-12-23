@@ -33,8 +33,10 @@ public class OrderController {
         if(principal != null) {
             UserDto user = userService.findByUsername(principal.getName());
             switch (user.getRole()) {
-                case WORKER,ADMIN -> model.addAttribute("orders", orderService.getAllOrders());
-                default -> model.addAttribute("orders", orderService.getOrdersByIdUser(user.getId()));
+                case WORKER,ADMIN ->
+                    model.addAttribute("orders", orderService.getAllOrders().stream().filter(o->o.getStatus()!=Status.DELETED).toList());
+                default ->
+                        model.addAttribute("orders", orderService.getOrdersByIdUser(user.getId()).stream().filter(o->o.getStatus()!=Status.DELETED).toList());
             }
         }
         return "pages/OrdersMainPage";
@@ -61,7 +63,7 @@ public class OrderController {
     @GetMapping("/orders/{orderId}")
     public String viewOrder(Model model, @PathVariable String orderId){
         OrderDto order= orderService.getOrderById(Long.parseLong(orderId));
-        List<File> files = fileService.getFilesByOrderId(order.getId());
+        List<FileDto> files = fileService.getFilesByOrderId(order.getId());
         model.addAttribute("order", order);
         model.addAttribute("files", files);
         return "pages/Order";
@@ -69,14 +71,13 @@ public class OrderController {
 
     @PostMapping("/order/{orderId}/delete")
     public String deleteOrder(@PathVariable String orderId){
-        fileService.deleteFiles(fileService.getFilesByOrderId(Long.parseLong(orderId)), orderId);
-        orderService.deleteOrder(Long.parseLong(orderId));
+        orderService.changeOrderStatus(Long.parseLong(orderId), Status.DELETED);
         return "redirect:/orders";
     }
 
     @PostMapping("/order/{orderId}/changeStatus")
     public String changeOrderStatus(@PathVariable String orderId){
-        orderService.changeOrderStatus(Long.parseLong(orderId));
+        orderService.changeOrderStatus(Long.parseLong(orderId), Status.COMPLETED);
         return "redirect:/orders";
     }
 

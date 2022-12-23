@@ -32,7 +32,7 @@ public interface FileService {
      * @param file удаляемый файл
      * @throws FileException ошибка при удалении файла
      */
-    void deleteFile(File file);
+    void deleteFile(FileDto file);
     /**
      * Сохраняет файл в файловой системе
      *
@@ -47,9 +47,7 @@ public interface FileService {
      * @param id id заказа
      * @return список файлов в заказе
      */
-    List<File> getFilesByOrderId(Long id);
-
-    void deleteFiles(List<File> filesByOrderId, String l);
+    List<FileDto> getFilesByOrderId(Long id);
 
     /*List<FileDto>*/
 }

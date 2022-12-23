@@ -39,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
                 () -> new NotFoundException("Заказ с id: " + orderId + " не найден!")
         );
 
+
         orderRepository.delete(order);
     }
 
@@ -78,9 +79,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void changeOrderStatus(long parseLong) {
-        Order order = orderRepository.findById(parseLong).orElseThrow(() -> new NotFoundException("Заказ с id: " + parseLong + " не найден!"));
-        order.setStatus(Status.COMPLETED);
+    public void changeOrderStatus(Long orderId, Status status) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ с id: " + orderId + " не найден!"));
+        order.setStatus(status);
         orderRepository.save(order);
     }
 

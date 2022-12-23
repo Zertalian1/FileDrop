@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" lang="ru">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ru">
 <head>
   <link media="all" rel="stylesheet" th:href="@{/style/OrderStyle.css}" type="text/css"/>
 </head>
@@ -8,10 +8,10 @@
 <body>
 
 <header id="logout">
-  <form  sec:authorize="hasAuthority('USER')" th:method="post" th:action="@{/order/{orderId}/delete(orderId=${order.getId()})}">
+  <form  sec:authorize="hasRole('ROLE_USER')" th:method="post" th:action="@{/order/{orderId}/delete(orderId=${order.getId()})}">
     <button type="submit" >Delete order</button>
   </form>
-  <form sec:authorize="hasAuthority('ADMIN')" th:method="post" th:action="@{/order/{orderId}/changeStatus(orderId=${order.getId()})}">
+  <form sec:authorize="hasRole('ROLE_WORKER')" th:method="post" th:action="@{/order/{orderId}/changeStatus(orderId=${order.getId()})}">
     <button type="submit" >Change Status</button>
   </form>
 

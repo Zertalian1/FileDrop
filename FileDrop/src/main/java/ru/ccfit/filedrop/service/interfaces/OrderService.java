@@ -1,6 +1,7 @@
 package ru.ccfit.filedrop.service.interfaces;
 
 import ru.ccfit.filedrop.dto.OrderDto;
+import ru.ccfit.filedrop.enumeration.Status;
 import ru.ccfit.filedrop.exception.*;
 import java.util.List;
 
@@ -45,5 +46,5 @@ public interface OrderService {
 
     List<OrderDto> getAllOrders();
 
-    void changeOrderStatus(long parseLong);
+    void changeOrderStatus(Long orderId, Status status);
 }
