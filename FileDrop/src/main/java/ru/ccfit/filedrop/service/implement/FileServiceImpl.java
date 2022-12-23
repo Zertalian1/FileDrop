@@ -2,12 +2,13 @@ package ru.ccfit.filedrop.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ccfit.filedrop.dto.FileDto;
+import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.entity.File;
+import ru.ccfit.filedrop.entity.Order;
 import ru.ccfit.filedrop.exception.FileException;
 import ru.ccfit.filedrop.exception.IntegrationException;
 import ru.ccfit.filedrop.exception.NotFoundException;
@@ -16,9 +17,12 @@ import ru.ccfit.filedrop.repository.FileRepository;
 import ru.ccfit.filedrop.service.interfaces.FileService;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +33,7 @@ public class FileServiceImpl implements FileService {
     private final Path rootPath;
 
     @Override
-    public Resource downloadFile(Long fileId) {
+    public ByteArrayResource downloadFile(Long fileId) {
         File file = fileRepository.findById(fileId).orElseThrow(
                 () -> new NotFoundException("Файл с id: " + fileId + " не найден!")
         );
@@ -38,7 +42,7 @@ public class FileServiceImpl implements FileService {
 
         try {
             resource = new ByteArrayResource
-                    (Files.readAllBytes(rootPath.resolve(file.getPath())));
+                    (Files.readAllBytes(rootPath.resolve(file.getPath()).resolve(file.getName())));
         } catch (IOException e) {
             throw new FileException("Ошибка при скачивании файла");
         }
@@ -48,20 +52,20 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileDto getFileById(Long fileId) {
-        Optional<File> order = fileRepository.findById(fileId);
-        return order.map(fileMapper::fileToFileDto).orElseThrow(
+        Optional<File> files = fileRepository.findById(fileId);
+        return files.map(fileMapper::fileToFileDto).orElseThrow(
                 () -> new NotFoundException("Файл с id: " + fileId + " не найден!")
         );
     }
 
     @Override
-    public void deleteFile(File file) {
+    public void deleteFile(FileDto file) {
         try {
-            Files.delete(rootPath.resolve(file.getPath()));
+            Files.delete(rootPath.resolve(file.getPath()).resolve(file.getName()));
         } catch (IOException e) {
             throw new FileException("Ошибка при удалении файла");
         }
-        fileRepository.delete(file);
+        fileRepository.delete(fileMapper.fileDtoToFile(file));
     }
 
     @Override
@@ -75,8 +79,9 @@ public class FileServiceImpl implements FileService {
 
         Path filePath = getPathFile(file);
 
-        try {
-            Files.copy(multipartFile.getInputStream(), rootPath.resolve(filePath));
+        try (InputStream inputStream = multipartFile.getInputStream()){
+            Files.createDirectories(rootPath.resolve(filePath));
+            Files.copy(inputStream, rootPath.resolve(filePath).resolve(file.getName()));
         } catch (IOException e) {
             fileRepository.delete(file);
             throw new FileException("Ошибка при сохранении файла");
@@ -86,6 +91,15 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(file);
     }
 
+    @Override
+    public List<FileDto> getFilesByOrderId(Long id) {
+        return listFileToListFileDto(fileRepository.getFilesByOrderId(id));
+    }
+
+    private List<FileDto> listFileToListFileDto(List<File> files) {
+        return files.stream().map(fileMapper::fileToFileDto).collect(Collectors.toList());
+    }
+
     /**
      * Возвращает относительный путь необходимого файла
      *
@@ -93,6 +107,6 @@ public class FileServiceImpl implements FileService {
      * @return Path относительный путь
      */
     private Path getPathFile(File file) {
-        return Path.of(String.valueOf(file.getOrder().getId())).resolve(String.valueOf(file.getId()));
+        return Path.of("Order" + file.getOrder().getId());
     }
 }

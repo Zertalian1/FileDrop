@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>sign-in</title>
+    <style>
+        @import "/style/SecurityPageStyle.css";
+    </style>
+    <link media="all" rel="stylesheet" th:href="@{/style/SecurityPageStyle.css}" type="text/css"/>
+</head>
+<body>
+<main id="main-holder">
+    <h1 id="header">Login</h1>
+<form th:action="@{/login}" th:method="POST" th:object="${user}">
+    <input type="text" name="username" id="username-field" class="form-field" placeholder="Username">
+    <input type="password" name="password" id="password-field" class="form-field" placeholder="Password">
+    <input type="submit" value="Login" id="form-submit">
+</form>
+    <div id="link">
+        <span>New user? <a th:href="@{/registration}">Register here</a></span>
+    </div>
+</main>
+</body>
+</html>

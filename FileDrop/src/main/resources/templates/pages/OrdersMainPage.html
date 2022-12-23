@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+    <link media="all" rel="stylesheet" th:href="@{/style/MainPageStyle.css}" type="text/css"/>
+</head>
+
+<body>
+
+<header id="logout">
+    <form  th:method="GET" th:action="@{/order/new}">
+        <button type="submit" id="newOrder_btn" >New order</button>
+    </form>
+
+    <form th:action="@{/logout}" th:method="GET">
+        <button type="submit" id="logout_btn" >Exit</button>
+    </form>
+</header>
+
+<main id="main-holder">
+    <div th:each="order : ${orders}" id="form-field">
+
+        <a class="order" th:href="@{/orders/{orderId}(orderId=${order.getId()})}"
+                         th:text="|${order.getCreateDateTimeAsSting()} ${order.getStatus()}|">user</a>
+    </div>
+</main>
+</body>
+</html>

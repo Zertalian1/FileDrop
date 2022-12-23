@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>login</title>
+    <link media="all" rel="stylesheet" th:href="@{/style/SecurityPageStyle.css}" type="text/css"/>
+</head>
+<body>
+    <main id="main-holder">
+        <h1 id="header">Registration</h1>
+        <form th:action="@{/registration}" th:method="POST" th:object="${user}">
+            <input type="tel" name="phone" id="phone-field" class="form-field" placeholder="Phone" th:field="*{phone}">
+            <input type="text" name="username" id="username-field" class="form-field" placeholder="Username" th:field="*{name}">
+            <input type="password" name="password" id="password-field" class="form-field" placeholder="Password" th:field="*{password}">
+
+            <input type="submit" value="Registration" id="form-submit">
+        </form>
+    </main>
+</body>
+</html>

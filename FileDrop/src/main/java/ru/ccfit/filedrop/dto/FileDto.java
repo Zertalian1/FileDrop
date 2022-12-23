@@ -22,4 +22,11 @@ public class FileDto {
     private OffsetDateTime createDateTime;
 
     private OrderDto order;
+
+    public FileDto(String name, UserDto ownerUser, OrderDto order, OffsetDateTime createDateTime) {
+        this.name = name;
+        this.ownerUser = ownerUser;
+        this.createDateTime = createDateTime;
+        this.order = order;
+    }
 }

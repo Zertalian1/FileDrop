@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.ccfit.filedrop.dto.OrderDto;
 import ru.ccfit.filedrop.entity.Order;
+import ru.ccfit.filedrop.enumeration.Status;
 import ru.ccfit.filedrop.exception.IntegrationException;
 import ru.ccfit.filedrop.exception.NotFoundException;
 import ru.ccfit.filedrop.mapper.OrderMapper;
@@ -12,6 +13,8 @@ import ru.ccfit.filedrop.repository.OrderRepository;
 import ru.ccfit.filedrop.service.interfaces.FileService;
 import ru.ccfit.filedrop.service.interfaces.OrderService;
 
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +23,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
-    private final FileService fileService;
     private final OrderRepository orderRepository;
 
     @Override
@@ -37,7 +39,6 @@ public class OrderServiceImpl implements OrderService {
                 () -> new NotFoundException("Заказ с id: " + orderId + " не найден!")
         );
 
-        order.getFiles().forEach(fileService::deleteFile);
 
         orderRepository.delete(order);
     }
@@ -68,6 +69,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getOrdersByIdUser(Long userId) {
         return listOrderToListOrderDto(orderRepository.getOrderByUserId(userId));
+    }
+
+    @Override
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        orderRepository.findAll().forEach(orders::add);
+        return listOrderToListOrderDto(orders);
+    }
+
+    @Override
+    public void changeOrderStatus(Long orderId, Status status) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Заказ с id: " + orderId + " не найден!"));
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 
     /**
